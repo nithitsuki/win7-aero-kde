@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Bind the Windows/Meta key to SevenStart and remove the stock launcher action
+# that competes for the same key in the AeroThemePlasma shell.
+set -u
+
+# Wait for plasmashell to answer; autostart can fire before the panel exists.
+for _ in $(seq 1 20); do
+    if qdbus6 org.kde.plasmashell /PlasmaShell \
+        org.kde.PlasmaShell.evaluateScript 'print(1)' >/dev/null 2>&1; then
+        break
+    fi
+    sleep 1
+done
+
+qdbus6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript '
+    var ps = panels();
+    for (var i = 0; i < ps.length; i++) {
+        var ws = ps[i].widgets();
+        for (var j = 0; j < ws.length; j++) {
+            if (ws[j].type === "io.gitgud.wackyideas.SevenStart") {
+                ws[j].globalShortcut = "Meta";
+            }
+        }
+    }
+' >/dev/null 2>&1 || true
+
+# The stock "activate application launcher" action has no visible launcher in
+# this shell. If it is still holding Meta, drop that runtime action so Meta goes
+# to SevenStart. If the config already moved it to Alt+F1, leave it alone.
+if qdbus6 --literal org.kde.kglobalaccel /kglobalaccel \
+    org.kde.KGlobalAccel.getGlobalShortcutsByKey 16777250 2>/dev/null \
+    | grep -q 'activate application launcher'; then
+    qdbus6 org.kde.kglobalaccel /kglobalaccel \
+        org.kde.KGlobalAccel.unregister plasmashell 'activate application launcher' \
+        >/dev/null 2>&1 || true
+fi
+
+exit 0

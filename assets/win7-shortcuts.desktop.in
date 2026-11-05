@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Windows 7 Shortcuts
+Comment=Bind Meta to Seven Start and remove the conflicting stock launcher shortcut
+Exec=@HOME@/.local/bin/win7-shortcuts
+OnlyShowIn=KDE;
+X-KDE-autostart-after=panel
+NoDisplay=true

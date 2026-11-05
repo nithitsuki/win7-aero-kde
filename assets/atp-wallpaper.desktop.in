@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=ATP Wallpaper
+Comment=Keep the Windows 7 Harmony wallpaper at native resolution
+Exec=sh -c 'sleep 8; plasma-apply-wallpaperimage "@WALLPAPER@"'
+OnlyShowIn=KDE;
+X-KDE-autostart-after=panel
+NoDisplay=true

@@ -1,0 +1,11 @@
+*.iso
+*.wim
+*.esd
+*.pkg.tar.*
+*.log
+build/
+dist/
+node_modules/
+.cache/
+extracted/
+wallpapers/
