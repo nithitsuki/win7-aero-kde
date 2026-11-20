@@ -13,8 +13,8 @@ log "Preflight checks"
     fi
 }
 
-if ! df -Pk / | awk 'NR==2 { exit ($4 < 8*1024*1024) }'; then
-    die "At least 8 GB free disk space is required."
+if ! df -Pk / | awk 'NR==2 { exit ($4 < 10*1024*1024) }'; then
+    die "At least 10 GB free disk space is required."
 fi
 
 if ! sudo -n true 2>/dev/null; then

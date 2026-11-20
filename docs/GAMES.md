@@ -23,6 +23,9 @@ verifies the image's SHA-1 before extraction. The binaries are unmodified
 except for the MUI resource merge, and no activation stub is used — Wine's own
 `slc.dll` is sufficient.
 
+The image must be the x64 edition. The 32-bit card games draw a black play area
+under Wine 11. The 64-bit games from the same image render correctly.
+
 ## How it works
 
 1. `scripts/30-assets.sh` extracts `Program Files/Microsoft Games` and
@@ -46,8 +49,8 @@ There is no code patch and no activation DLL.
 ## Requirements
 
 - The same Windows 7 ISO used for the theme assets
-  (`en_windows_7_professional_with_sp1_x86_dvd_u_677056.iso`,
-  SHA-1 `d89937df3a9bc2ec1a1486195fd308cd3dade928`)
+  (`en_windows_7_ultimate_with_sp1_x64_dvd_u_677332.iso`,
+  SHA-1 `36ae90defbad9d9539e649b193ae573b77a71c83`)
 - A Proton runtime installed through Steam
 - `uv`, `7zip`, `icoutils`, ImageMagick (installed by the dependency step)
 

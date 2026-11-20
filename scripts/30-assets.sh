@@ -2,12 +2,12 @@
 set -euo pipefail
 source "$ROOT/lib/common.sh"
 
-# Windows 7 Professional SP1 x86, English. This is the genuine Microsoft image.
+# Windows 7 Ultimate SP1 x64, English. This is the genuine Microsoft image.
 # The hash check matters: archive.org has items with the same filename but a
 # modified/repacked image.
-ISO_URL="https://archive.org/download/en_windows_7_professional_with_sp1_x86_dvd_u_677056_201708/en_windows_7_professional_with_sp1_x86_dvd_u_677056.iso"
-ISO_SHA1="d89937df3a9bc2ec1a1486195fd308cd3dade928"
-ISO_NAME="win7-pro-x86.iso"
+ISO_URL="https://archive.org/download/en_windows_7_ultimate_with_sp1_x64_dvd_u_677332_202207/en_windows_7_ultimate_with_sp1_x64_dvd_u_677332.iso"
+ISO_SHA1="36ae90defbad9d9539e649b193ae573b77a71c83"
+ISO_NAME="win7-ultimate-x64.iso"
 
 ISO="$CACHE_DIR/$ISO_NAME"
 WORK="$CACHE_DIR/work"
@@ -48,7 +48,7 @@ elif [[ -f "$ISO" ]] && [[ "$(sha1sum "$ISO" | awk '{print $1}')" == "$ISO_SHA1"
     ok "Reusing verified ISO cache: $ISO"
 else
     rm -f "$ISO"
-    log "Downloading Windows 7 ISO (~2.4 GB). This is the slow step."
+    log "Downloading Windows 7 ISO (~3.3 GB). This is the slow step."
     if have aria2c; then
         aria2c -x16 -s16 -k1M --file-allocation=none --allow-overwrite=true \
             --auto-file-renaming=false -d "$CACHE_DIR" -o "$ISO_NAME" "$ISO_URL" \
@@ -64,9 +64,16 @@ log "Extracting install.wim from the ISO"
 7z x -y -o"$WORK" "$ISO" sources/install.wim >>"$LOG_FILE" 2>&1 \
     || die "Could not extract sources/install.wim"
 
+arch="$(wimlib-imagex info "$WIM" 2>/dev/null | awk -F': *' '/^Architecture:/{print $2; exit}' || true)"
+if [[ -n "$arch" && "$arch" != x86_64 ]]; then
+    warn "This image reports architecture $arch."
+    warn "Use the 64-bit Ultimate image instead."
+    warn "The 32-bit games render a black play area under Wine 11."
+fi
+
 log "Extracting fonts, sounds, cursors, icon DLLs and sidebar gadgets"
 rm -rf "$WORK/wim"
-# These paths come from the Windows 7 Professional SP1 x86 image. A missing
+# These paths come from the Windows 7 Ultimate SP1 x64 image. A missing
 # gadget folder stops the install on purpose: the packages need the official art.
 7z x -y -o"$WORK/wim" "$WIM" \
     '1/Windows/Fonts' \

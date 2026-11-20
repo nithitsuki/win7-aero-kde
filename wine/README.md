@@ -26,7 +26,8 @@ What the installer does:
    `install.wim` (`WIN7_WIM`/`WIN7_WIM_INDEX` can point at an extracted WIM).
 3. Merges each MUI file into its executable — Wine has no MUI redirection.
 4. Installs the ISO's `UIRibbon.dll`/`UIRibbonRes.dll` into the prefix
-   `system32`, backing up Wine's stub, so WordPad and Paint can start.
+   `system32`, backing up Wine's stub, and registers the Ribbon COM classes, so
+   WordPad and Paint can start.
 5. Installs `win7app-run` plus one `.desktop` launcher per supported app, with an
    icon extracted from the binary itself. MUI merging uses the shared
    `../lib/patch_mui.py`.

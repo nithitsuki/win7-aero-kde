@@ -20,6 +20,9 @@ BINDIR="$HOME/.local/bin"
 APPS_DESKTOP="$HOME/.local/share/applications"
 ICON_ROOT="$HOME/.local/share/icons/hicolor"
 
+log() { printf '==> %s\n' "$*"; }
+die() { printf '[error] %s\n' "$*" >&2; exit 1; }
+
 find_proton() {
   if [[ -n "${PROTON_DIR:-}" && -x "$PROTON_DIR/files/bin/wine" ]]; then
     printf '%s\n' "$PROTON_DIR"; return 0
@@ -65,8 +68,6 @@ APPS=(
   "osk|osk.exe|On-Screen Keyboard|"
 )
 
-log() { printf '==> %s\n' "$*"; }
-die() { printf '[error] %s\n' "$*" >&2; exit 1; }
 supported() { [[ " $SUPPORTED " == *" $1 "* ]]; }
 
 [[ -f "$ISO" ]] || die "ISO not found: $ISO"
@@ -178,6 +179,7 @@ fi
 # WordPad and Paint use the Windows Ribbon. Wine ships only a stub uiribbon.dll,
 # so install the real one and keep the stub as *.wine-backup.
 SYS32="$PFX/drive_c/windows/system32"
+ribbon_native=0
 for f in UIRibbon.dll UIRibbonRes.dll; do
   [[ -f "$SRC/$f" ]] || continue
   low="$(printf '%s' "$f" | tr 'A-Z' 'a-z')"
@@ -188,7 +190,26 @@ for f in UIRibbon.dll UIRibbonRes.dll; do
     rm -f "$SYS32/$low"
   fi
   cp -f "$SRC/$f" "$SYS32/$low"
+  if [[ "$f" == UIRibbon.dll ]]; then
+    ribbon_native=1
+  fi
 done
+
+# The Ribbon classes are registered by Windows setup, not by the DLL, which
+# does not export DllRegisterServer. WordPad and Paint cannot start without
+# them: CoCreateInstance returns "class not registered".
+if [[ $ribbon_native == 1 ]]; then
+  for clsid in 0F7434B6-59B6-4250-999E-D168D6AE4293 \
+               32665929-D77E-4AB5-8C08-FBF409B8A233 \
+               926749FA-2615-4987-8845-C33E65F2B957 \
+               C608E099-892D-4628-B6A2-97257B014E2E; do
+    key="HKLM\\Software\\Classes\\CLSID\\{$clsid}\\InProcServer32"
+    WINEPREFIX="$PFX" "$PROTON_DIR/files/bin/wine" reg add "$key" \
+      /ve /t REG_EXPAND_SZ /d '%SystemRoot%\system32\UIRibbon.dll' /f >/dev/null 2>&1 || true
+    WINEPREFIX="$PFX" "$PROTON_DIR/files/bin/wine" reg add "$key" \
+      /v ThreadingModel /t REG_SZ /d Apartment /f >/dev/null 2>&1 || true
+  done
+fi
 
 log "Installing launchers and icons"
 install -Dm755 "$SCRIPT_DIR/win7app-run" "$BINDIR/win7app-run"

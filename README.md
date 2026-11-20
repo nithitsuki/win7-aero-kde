@@ -37,9 +37,9 @@ The full mapping, including which script owns each layer, is in
 ## Requirements
 
 - Arch Linux with KDE Plasma 6.8 on Wayland
-- `sudo`, at least 8 GB free disk (10 GB recommended) and network access
-- A Windows 7 ISO is downloaded automatically, or supply your own with
-  `WIN7_ISO=/path/to.iso`
+- `sudo`, at least 10 GB free disk (12 GB recommended) and network access
+- The installer downloads the Windows 7 Ultimate SP1 x64 ISO automatically.
+  Set `WIN7_ISO=/path/to.iso` to use your own image.
 - Proton in Steam for the optional Windows games and applications
 
 X11 is not supported. Details: [docs/INSTALL.md](docs/INSTALL.md).

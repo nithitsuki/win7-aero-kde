@@ -16,7 +16,7 @@ different hash.
 **Fix:** Delete the cached image and rerun. Do not bypass the check.
 
 ```bash
-rm -f ~/.local/share/win7-aero/cache/win7-pro-x86.iso
+rm -f ~/.local/share/win7-aero/cache/win7-ultimate-x64.iso
 ./install.sh
 ```
 
@@ -362,6 +362,22 @@ A bare `wineboot` prefix does not have them.
 
 **Fix:** Re-run `49-games.sh`.
 
+### A card game shows a black play area
+
+**Symptom:** The window opens and the menu bar is correct, but the cards and the
+table are black.
+
+**Cause:** The games come from a 32-bit image. The 32-bit card games do not draw
+their Direct3D scene under Wine 11.
+
+**Fix:** Use the 64-bit Ultimate SP1 image and run `./install.sh` again. If
+`WIN7_ISO` points at a 32-bit image, unset it first. Remove the old image from
+the cache to free disk space:
+
+```bash
+rm -f ~/.local/share/win7-aero/cache/win7-pro-x86.iso
+```
+
 ### A game exits immediately or complains about Windows
 
 **Cause:** The prefix reports Windows 10; the retail games reject it.
@@ -420,7 +436,28 @@ Re-run `wine/install-apps.sh` to repair an installation.
 
 **Fix:** Install the ISO's `UIRibbon.dll` and `UIRibbonRes.dll` into the prefix
 `system32` (the installer does this and backs up the Wine stub) and force
-`uiribbon=n`. The launchers already pass the override.
+`uiribbon=n`. The launchers already pass the override. The installer also
+registers the Ribbon COM classes, which the DLL does not register itself.
+
+### WordPad Font group is blank
+
+**Symptom:** The font family and font size boxes are empty. The Bold, Italic
+and Underline buttons show no glyph.
+
+**Cause:** Wine's support for the Ribbon framework does not draw the font
+control.
+
+**Fix:** None yet. Text entry and the paragraph commands still work.
+
+### Paint canvas turns black with the Text tool
+
+**Symptom:** After you click the Text tool and then the canvas, the canvas is
+black and does not redraw.
+
+**Cause:** Wine does not draw the text box on the canvas.
+
+**Fix:** Close Paint and discard the changes. Do not use the Text tool until
+Wine corrects the bug.
 
 ## Repairing a single step
 

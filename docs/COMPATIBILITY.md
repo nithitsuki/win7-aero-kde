@@ -2,7 +2,7 @@
 
 ## Tested reference
 
-Tested configuration, last verified on 2026-11-17.
+Tested configuration, last verified on 2026-11-20.
 
 | Component | Version |
 |---|---|
@@ -55,10 +55,11 @@ upstream commit.
 
 | Field | Value |
 |---|---|
-| Item | `en_windows_7_professional_with_sp1_x86_dvd_u_677056_201708` |
-| File | `en_windows_7_professional_with_sp1_x86_dvd_u_677056.iso` |
-| Size | 2,564,476,928 bytes |
-| SHA-1 | `d89937df3a9bc2ec1a1486195fd308cd3dade928` |
+| Item | `en_windows_7_ultimate_with_sp1_x64_dvd_u_677332_202207` |
+| File | `en_windows_7_ultimate_with_sp1_x64_dvd_u_677332.iso` |
+| Size | 3,320,903,680 bytes |
+| SHA-1 | `36ae90defbad9d9539e649b193ae573b77a71c83` |
+| SHA-256 | `36f4fa2416d0982697ab106e3a72d2e120dbcdb6cc54fd3906d06120d0653808` |
 
 Fonts are installed directly from this image. The reference machine used
 `ttf-win7-fonts 7.1-9`; this repository does not depend on an AUR helper.
@@ -93,14 +94,14 @@ Details: [GAMES.md](GAMES.md).
 
 ## Windows applications under Wine
 
-The optional `wine/` layer uses the 64-bit Windows 7 Ultimate SP1 image rather
-than the 32-bit Professional image above.
+The optional `wine/` layer uses the same 64-bit Windows 7 Ultimate SP1 image
+as the theme assets.
 
 | Application | Status |
 |---|---|
 | Notepad | Working |
-| WordPad | Working (native `UIRibbon.dll`) |
-| Paint | Working (native `UIRibbon.dll`) |
+| WordPad | Working (native `UIRibbon.dll`). Font group is blank |
+| Paint | Working (native `UIRibbon.dll`). Text tool blackens the canvas |
 | On-Screen Keyboard | Working (native `duser`/`dui70`) |
 | Calculator | Blocked: `COMCTL32` ordinal 392 |
 | Task Manager | Blocked: `SHELL32.FixupOptionalComponents` stub |

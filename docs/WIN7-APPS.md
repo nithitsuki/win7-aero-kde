@@ -14,8 +14,8 @@ Working under Proton/Wine 11:
 | Application | Launcher | Notes |
 |---|---|---|
 | Notepad | `win7-notepad` | Opens files passed from Dolphin |
-| WordPad | `win7-wordpad` | Native `UIRibbon.dll`, override `uiribbon=n` |
-| Paint | `win7-paint` | Native `UIRibbon.dll`, override `uiribbon=n` |
+| WordPad | `win7-wordpad` | Native `UIRibbon.dll`, override `uiribbon=n`. The Font group is blank |
+| Paint | `win7-paint` | Native `UIRibbon.dll`, override `uiribbon=n`. The Text tool blackens the canvas |
 | On-Screen Keyboard | `win7-osk` | Native `duser`/`dui70` |
 
 The names above are desktop entries (`win7-*.desktop`). From a terminal, use
@@ -72,7 +72,8 @@ Optional environment variables:
 4. Merges each MUI resource file into its executable. Wine has no MUI
    redirection, so without this the menus and dialogs are blank.
 5. Installs the real `UIRibbon` pair into the prefix `system32` (Wine's stub is
-   backed up as `*.wine-backup`).
+   backed up as `*.wine-backup`) and registers the Ribbon COM classes. Windows
+   setup normally provides those classes, and the DLL does not register itself.
 6. Installs `win7app-run` and one `.desktop` launcher per supported application,
    with an icon extracted from the application binary.
 
@@ -85,6 +86,20 @@ Files land in:
 `win7app-run` selects an installed Proton runtime automatically, converts Linux
 paths to Wine paths and applies the per-application DLL overrides. It is the
 same runtime detection used by the games launcher.
+
+## Known limitations
+
+Two defects remain under Wine 11:
+
+- **WordPad: the Font group is blank.** The font family and font size boxes
+  are empty. The Bold, Italic and Underline buttons show no glyph. Text entry
+  and the paragraph commands work.
+- **Paint: the Text tool blackens the canvas.** Click the Text tool, then
+  click the canvas. The canvas renders black and does not redraw. Close Paint
+  without saving, then open it again.
+
+These defects come from Wine, not from the extraction. A newer Wine version
+may correct them.
 
 ## HiDPI
 

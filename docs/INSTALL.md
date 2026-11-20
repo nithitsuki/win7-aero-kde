@@ -4,7 +4,7 @@
 
 - Arch Linux with KDE Plasma 6.8 installed
 - `sudo` (the installer asks once, or once per privileged step)
-- At least 8 GB free disk for the ISO, WIM and builds (10 GB recommended)
+- At least 10 GB free disk for the ISO, WIM and builds (12 GB recommended)
 - Network access for repositories, AeroThemePlasma and the ISO
 - Proton in Steam for the Windows games and applications (optional)
 - A graphical KDE session is recommended; a TTY install works but the live theme
@@ -97,8 +97,9 @@ WALLPAPER_SRC=/path/to/harmony.jpg ./install.sh
 `--skip-fonts` is an alias for `--skip-assets`.
 
 A local ISO with a different SHA-1 is accepted with a warning because it is the
-user's own image. The default download is checked against the tested Microsoft
-hash, and a mismatch is fatal.
+user's own image. Use the 64-bit Ultimate SP1 image: the 32-bit games render a
+black play area under Wine 11. The default download is checked against the
+tested Microsoft hash, and a mismatch is fatal.
 
 ## What runs
 
