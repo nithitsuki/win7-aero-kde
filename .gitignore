@@ -9,3 +9,7 @@ node_modules/
 .cache/
 extracted/
 wallpapers/
+
+# Python bytecode
+__pycache__/
+*.pyc

@@ -6,6 +6,7 @@
 - `sudo` (the installer asks once, or once per privileged step)
 - At least 8 GB free disk for the ISO, WIM and builds (10 GB recommended)
 - Network access for repositories, AeroThemePlasma and the ISO
+- Proton in Steam for the Windows games and applications (optional)
 - A graphical KDE session is recommended; a TTY install works but the live theme
   apply is deferred until login
 
@@ -15,14 +16,45 @@ Wayland).
 
 ## Quick start
 
+One line:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nithitsuki/win7-aero-kde/main/get.sh | bash
+```
+
+Graphical installer:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nithitsuki/win7-aero-kde/main/get.sh | bash -s -- --gui
+```
+
+From a checkout:
+
 ```bash
 git clone https://github.com/nithitsuki/win7-aero-kde.git
 cd win7-aero-kde
 ./install.sh
 ```
 
+The bootstrap caches the checkout in `~/.cache/win7-aero/repo` and updates
+it with `git pull` on later runs.
+
 Re-running is safe: completed components are skipped, and the `--reinstall-*`
 flags rebuild a specific component.
+
+## Graphical installer
+
+```bash
+./install.sh --gui     # or: gui/win7-installer
+```
+
+The window follows the Windows 7 setup layout: a segmented green progress bar,
+the current step, a collapsible details pane, and **Install now** / **Cancel**.
+It runs the same `install.sh`, so the result is identical.
+
+It asks for the administrator password once (unless `sudo` is passwordless),
+installs the Windows 7 games by default, and leaves the terminal free. It
+requires `tk`; the launcher prints the package name if it is missing.
 
 ## Options
 
@@ -34,6 +66,7 @@ flags rebuild a specific component.
 | `--skip-atp` | Skip AeroThemePlasma build and install |
 | `--skip-gadgets` | Skip the AeroShell desktop gadgets |
 | `--skip-sidebar-gadgets` | Skip Picture Puzzle, Calendar and Currency |
+| `--skip-games` | Skip the Windows 7 games |
 | `--skip-gtk` | Skip the Windows 7 Better GTK theme |
 | `--skip-linver` | Skip the LinVer `winver` clone |
 | `--skip-kde` | Skip Plasma/KWin configuration |
@@ -52,6 +85,7 @@ flags rebuild a specific component.
 | `--reinstall-linver` | Rebuild LinVer |
 | `--force` | Continue on a non-Arch system (unsupported) |
 | `--dry-run` | Print the steps; state directories and the log are still created |
+| `--gui` | Open the graphical installer instead |
 
 ## Environment overrides
 
@@ -81,13 +115,14 @@ The scripts run in this order:
 | 7 | `46-sidebar-gadgets.sh` | Sidebar gadget ports |
 | 8 | `47-gtk.sh` | GTK theme |
 | 9 | `48-linver.sh` | LinVer |
-| 10 | `50-kde.sh` | Plasma/KWin configuration |
-| 11 | `55-desktop-trash.sh` | Recycle Bin icon |
-| 12 | `60-sddm.sh` | SDDM theme and session |
-| 13 | `70-konsole.sh` | Command Prompt |
-| 14 | `72-shortcuts.sh` | Meta and PrintScreen |
-| 15 | `80-wallpaper.sh` | Harmony wallpaper |
-| 16 | `90-verify.sh` | Final checks |
+| 10 | `49-games.sh` | Windows 7 games from the ISO |
+| 11 | `50-kde.sh` | Plasma/KWin configuration |
+| 12 | `55-desktop-trash.sh` | Recycle Bin icon |
+| 13 | `60-sddm.sh` | SDDM theme and session |
+| 14 | `70-konsole.sh` | Command Prompt |
+| 15 | `72-shortcuts.sh` | Meta and PrintScreen |
+| 16 | `80-wallpaper.sh` | Harmony wallpaper |
+| 17 | `90-verify.sh` | Final checks |
 
 ## After install
 
@@ -180,6 +215,13 @@ GTK3 and GTK4 come from the Arch repositories. GTK2 is AUR-only (`gtk2`);
 
 Run `linver` for the Windows 7-style **About Windows** dialog.
 
+### Games
+
+The installer adds Solitaire, Spider Solitaire, FreeCell, Hearts, Minesweeper,
+Chess Titans, Mahjong Titans and Purble Place from the ISO. You need Proton in
+Steam; without it the game step is skipped and the rest of the conversion
+continues. See [GAMES.md](GAMES.md).
+
 ### Windows applications (optional)
 
 The `wine/` directory installs genuine Windows 7 Notepad, WordPad, Paint and
@@ -207,6 +249,8 @@ The uninstaller runs AeroThemePlasma's own uninstaller, removes the gadgets and
 Sidebar widgets, the Recycle Bin icon and its updater, the GTK theme and LinVer,
 reinstalls the distro `libplasma`, removes fonts/sounds/cursors, restores the
 most recent configuration backup and restores the SDDM configuration backup.
+The games are removed in the same run; the Wine prefix and saved games are
+kept.
 
 It removes the Recycle Bin desktop file only when it contains the installer
 marker, so a user-created icon with the same name is left alone. Other user

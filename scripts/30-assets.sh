@@ -86,6 +86,31 @@ rm -rf "$WORK/wim"
 
 [[ -d "$WORK/wim/1/Windows/Fonts" ]] || die "Fonts directory missing from the extracted WIM"
 
+# Games live in the same image. Keep them next to the other assets so the game
+# step can install them without downloading the ISO again.
+if [[ ${SKIP_GAMES:-0} != 1 ]]; then
+    # Starter lacks Chess and Mahjong; use the first image that has the full set.
+    GAME_INDEX=""
+    for i in $(wimlib-imagex info "$WIM" | sed -n 's/^Index: *//p'); do
+        if wimlib-imagex dir "$WIM" "$i" --path="/Program Files/Microsoft Games/Chess" >/dev/null 2>&1; then
+            GAME_INDEX="$i"; break
+        fi
+    done
+    [[ -n "$GAME_INDEX" ]] || die "No WIM image with the full Windows 7 game set"
+    log "Extracting Windows 7 games from image $GAME_INDEX"
+    rm -rf "$EXTRACT/games"
+    mkdir -p "$EXTRACT/games"
+    7z x -y -o"$EXTRACT/games" "$WIM" \
+        "$GAME_INDEX/Program Files/Microsoft Games" \
+        "$GAME_INDEX/Windows/System32/CardGames.dll" >>"$LOG_FILE" 2>&1 \
+        || die "Could not extract the Windows 7 games"
+    mv "$EXTRACT/games/$GAME_INDEX/Program Files/Microsoft Games" "$EXTRACT/games/Microsoft Games"
+    mv "$EXTRACT/games/$GAME_INDEX/Windows/System32/CardGames.dll" "$EXTRACT/games/CardGames.dll"
+    rm -rf "$EXTRACT/games/$GAME_INDEX"
+    [[ -d "$EXTRACT/games/Microsoft Games" ]] || die "Game files are missing after extraction"
+    ok "Games extracted: $(find "$EXTRACT/games/Microsoft Games" -name '*.exe' | wc -l) executables"
+fi
+
 # The official gadgets carry their art inside the .Gadget folders. The QML ports
 # in this repo ship no Microsoft images, so keep a copy for 46-sidebar-gadgets.sh.
 SIDEBAR_WIM="$WORK/wim/1/Program Files/Windows Sidebar/Gadgets"

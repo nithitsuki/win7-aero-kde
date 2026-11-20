@@ -4,8 +4,8 @@ An optional layer that installs genuine Windows 7 utilities from the retail ISO
 into a Wine prefix, with real Windows 7 icons, HiDPI support and Dolphin
 integration.
 
-It is independent of the theme: the conversion is complete without it. Nothing
-here comes from a repackaging site; see [PROVENANCE.md](PROVENANCE.md).
+It is independent of the theme: the conversion is complete without it. All
+files are extracted from the retail ISO.
 
 ## Status
 

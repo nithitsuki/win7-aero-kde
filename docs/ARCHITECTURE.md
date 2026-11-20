@@ -20,7 +20,7 @@ components together in the right order and verifies the result.
 ├──────────────────────────────────────────────────────────────┤
 │ Integrations GTK theme, winver, Recycle Bin, CMD, shortcuts  │  47, 48, 55, 70, 72
 ├──────────────────────────────────────────────────────────────┤
-│ Applications Optional Windows utilities under Wine           │  wine/
+│ Applications Windows 7 games and utilities under Wine        │  49-games, wine/
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -51,6 +51,7 @@ configured near the end. Each step remains independently skippable.
 | Login screen | ATP SDDM theme | `60-sddm` |
 | GTK applications | Windows 7 Better GTK2/3/4 theme | `47-gtk` |
 | Notepad, Paint, WordPad, OSK | Windows 7 binaries from the ISO under Wine | `wine/` |
+| Solitaire, FreeCell, Hearts, Spider, Minesweeper, Chess Titans, Mahjong Titans, Purble Place | Original game files from the ISO under Wine | `49-games` |
 
 ## Component responsibilities
 
@@ -68,6 +69,7 @@ configured near the end. Each step remains independently skippable.
 | `scripts/46-sidebar-gadgets.sh` | QML Sidebar ports plus ISO artwork |
 | `scripts/47-gtk.sh` | Windows 7 Better GTK theme and libadwaita override |
 | `scripts/48-linver.sh` | LinVer build and install |
+| `scripts/49-games.sh` | Windows 7 games from the extracted image |
 | `scripts/50-kde.sh` | Look-and-feel, fonts, KWin effects, decoration |
 | `scripts/55-desktop-trash.sh` | Recycle Bin desktop icon and systemd path unit |
 | `scripts/60-sddm.sh` | SDDM theme and default session |
@@ -80,14 +82,16 @@ configured near the end. Each step remains independently skippable.
 ## Data flow
 
 1. `30-assets.sh` verifies the Windows 7 ISO, extracts `install.wim`, and pulls
-   only the files the theme needs. The ISO is deleted afterwards unless
-   `--keep-iso` is used.
+   only the files the theme needs, including the game directories. The ISO is
+   deleted afterwards unless `--keep-iso` is used.
 2. `40-atp.sh` installs AeroThemePlasma from its own repository and checks the
    pieces it claims to install.
 3. `46-sidebar-gadgets.sh` combines the QML packages in `gadgets/` with the
    Microsoft artwork extracted in step 1.
-4. `50-kde.sh` writes Plasma/KWin configuration and triggers a live reload.
-5. `90-verify.sh` re-reads the resulting configuration and files rather than
+4. `49-games.sh` installs the extracted games into the shared Wine prefix,
+   merges their MUI resources and writes launchers.
+5. `50-kde.sh` writes Plasma/KWin configuration and triggers a live reload.
+6. `90-verify.sh` re-reads the resulting configuration and files rather than
    trusting the exit codes of the earlier steps.
 
 ## Design constraints

@@ -263,6 +263,11 @@ if [[ -f "$STATE_DIR/manifests/gtk-config.recorded" && -d "$BACKUP_ROOT" ]]; the
     fi
 fi
 
+if [[ -x "$ROOT/games/uninstall-games.sh" ]]; then
+    log "Removing the Windows 7 games"
+    bash "$ROOT/games/uninstall-games.sh" || warn "Could not remove the games"
+fi
+
 refresh_ksycoca
 
 if [[ $PURGE == 1 ]]; then

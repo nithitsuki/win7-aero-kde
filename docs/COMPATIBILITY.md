@@ -72,6 +72,25 @@ Fonts are installed directly from this image. The reference machine used
 | Resolution | 1920×1200 |
 | SHA-256 | `6ea9f8468c76aa511a5b3cfc36fb212b86e7abd377f147042d2f25572bf206a2` |
 
+## Windows 7 games
+
+All eight offline games are built from the retail image and run under the
+installed Proton (Wine 11 base) with a Windows 7 prefix. No code patch or
+activation stub is used.
+
+| Game | Status |
+|---|---|
+| Solitaire | Working |
+| Spider Solitaire | Working |
+| FreeCell | Working |
+| Hearts | Working |
+| Minesweeper | Working |
+| Chess Titans | Working |
+| Mahjong Titans | Working |
+| Purble Place | Working |
+
+Details: [GAMES.md](GAMES.md).
+
 ## Windows applications under Wine
 
 The optional `wine/` layer uses the 64-bit Windows 7 Ultimate SP1 image rather

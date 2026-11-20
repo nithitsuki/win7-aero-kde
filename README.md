@@ -29,6 +29,7 @@ installs can be removed again.
 | Login screen | AeroThemePlasma SDDM theme |
 | GTK applications | Windows 7 Better GTK2/3/4 |
 | Notepad, Paint, WordPad, OSK | Windows 7 binaries from the ISO under Wine |
+| Solitaire, FreeCell, Hearts, Spider, Minesweeper, Chess Titans, Mahjong Titans, Purble Place | Original game files from the ISO under Wine |
 
 The full mapping, including which script owns each layer, is in
 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
@@ -39,16 +40,35 @@ The full mapping, including which script owns each layer, is in
 - `sudo`, at least 8 GB free disk (10 GB recommended) and network access
 - A Windows 7 ISO is downloaded automatically, or supply your own with
   `WIN7_ISO=/path/to.iso`
+- Proton in Steam for the optional Windows games and applications
 
 X11 is not supported. Details: [docs/INSTALL.md](docs/INSTALL.md).
 
 ## Install
 
+One line, no checkout:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nithitsuki/win7-aero-kde/main/get.sh | bash
+```
+
+With the graphical installer:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nithitsuki/win7-aero-kde/main/get.sh | bash -s -- --gui
+```
+
+Or from a checkout:
+
 ```bash
 git clone https://github.com/nithitsuki/win7-aero-kde.git
 cd win7-aero-kde
-./install.sh
+./install.sh          # terminal
+./install.sh --gui    # Windows 7-style installer
 ```
+
+`get.sh` caches the checkout in `~/.cache/win7-aero/repo` and updates it on
+the next run.
 
 The installer is safe to re-run: completed components are skipped, and
 individual steps can be skipped or rebuilt with the flags in
@@ -93,18 +113,21 @@ The uninstaller removes the components it installed, restores the distro
 | [ARCHITECTURE.md](docs/ARCHITECTURE.md) | Layer model, conversion map, script responsibilities |
 | [COMPATIBILITY.md](docs/COMPATIBILITY.md) | Tested reference, commits, support matrix |
 | [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Symptom → cause → fix |
+| [GAMES.md](docs/GAMES.md) | Windows 7 games built from the ISO |
 | [WIN7-APPS.md](docs/WIN7-APPS.md) | Optional Windows applications under Wine |
-| [PROVENANCE.md](docs/PROVENANCE.md) | Hash verification of third-party payloads |
 
 ## Repository layout
 
 ```text
+get.sh                  one-line bootstrap (curl | bash)
 install.sh              orchestrator
 uninstall.sh            reversible teardown
+gui/                    Windows 7-style graphical installer
 lib/common.sh           logging, sudo, backups, helpers
 scripts/                numbered install steps (00 → 90)
 assets/                 Konsole profile, colorscheme, CMD shell, icons, desktop files
 gadgets/                QML Sidebar gadget ports (art comes from the ISO)
+games/                  Windows 7 games layer (built from the ISO)
 wine/                   optional Windows 7 applications layer
 docs/                   documentation
 versions.lock           tested component commits (reference only)
@@ -135,13 +158,6 @@ the matching document when behaviour changes. Before a pull request:
 ./install.sh --dry-run
 ./install.sh --verify-only
 ```
-
-## Third-party payloads
-
-The Windows 7 games used alongside this project come from a third-party
-repackaging site. Every game binary was compared against the retail Microsoft
-ISO; the results and the two deliberate modifications found are documented in
-[docs/PROVENANCE.md](docs/PROVENANCE.md).
 
 ## Copyright
 

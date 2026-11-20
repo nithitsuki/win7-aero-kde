@@ -132,7 +132,7 @@ for spec in "${APPS[@]}"; do
   if [[ -f "$SRC/$exe.mui" ]]; then
     cp -f "$SRC/$exe.mui" "$dest/$exe.mui"
     uv run --quiet --no-project --with 'lief==0.17.1' --with pefile \
-      python3 "$SCRIPT_DIR/patch_mui.py" "$dest/$exe" "$dest/$exe.mui" >/dev/null
+      python3 "$SCRIPT_DIR/../lib/patch_mui.py" "$dest/$exe" "$dest/$exe.mui" >/dev/null
     rm -f "$dest/$exe.mui"
   fi
 

@@ -332,7 +332,56 @@ replacement.
 **Cause:** LinVer is a small AUR package built with `makepkg`, not a theme
 component.
 
-**Fix:** `ROOT="$PWD" bash scripts/48-linver.sh`.
+**Fix:** `ROOT="$PWD" bash scripts/48-linver.sh` from the checkout.
+
+## Games
+
+### The game step was skipped
+
+**Symptom:** No game launchers after install.
+
+**Cause:** Proton is not installed, or the assets were skipped.
+
+**Fix:** Install Proton in Steam and run
+`ROOT="$PWD" bash scripts/49-games.sh` from the checkout (with `get.sh`, use
+`~/.cache/win7-aero/repo`). If the install used `--skip-assets`, run the asset
+step first.
+
+### "Critical Error: No suitable graphics devices found"
+
+**Symptom:** A card game shows a DirectX error dialog and exits.
+
+**Cause:** The prefix is missing Proton's vkd3d DLLs, which wined3d imports.
+A bare `wineboot` prefix does not have them.
+
+**Fix:** Re-run `49-games.sh`; it copies them into `system32` and `syswow64`.
+
+### Blank menus and dialogs in a game
+
+**Cause:** The MUI resources were not merged and Wine has no MUI redirection.
+
+**Fix:** Re-run `49-games.sh`.
+
+### A game exits immediately or complains about Windows
+
+**Cause:** The prefix reports Windows 10; the retail games reject it.
+
+**Fix:** `49-games.sh` sets the prefix to Windows 7. Re-run it, or set the
+version manually:
+
+```bash
+WINEPREFIX=~/.win7games-proton/pfx winecfg -v win7
+```
+
+### Games stop working after a Steam update
+
+**Symptom:** `wine: could not load kernel32.dll, status c0000135`.
+
+**Cause:** Proton symlinks its builtins into the prefix. When Steam removes or
+replaces a Proton build, those links dangle.
+
+**Fix:** `win7games-run` detects the installed Proton and repoints the links
+before launch. Run any game launcher once after the update.
 
 ## Optional Windows applications
 
@@ -373,26 +422,12 @@ Re-run `wine/install-apps.sh` to repair an installation.
 `system32` (the installer does this and backs up the Wine stub) and force
 `uiribbon=n`. The launchers already pass the override.
 
-### Games stop working after a Steam update
-
-Only relevant if you use the external games launcher (`win7games-run`), which
-is not installed by this repository.
-
-**Symptom:** `wine: could not load kernel32.dll, status c0000135`.
-
-**Cause:** Proton symlinks its builtins into the prefix. When Steam removes or
-replaces a Proton build, those links dangle.
-
-**Fix:** `~/.local/bin/win7games-run` detects the installed Proton and repoints
-dangling links before launch. If a custom launcher bypasses it, run the same
-repair manually or reinstall Proton in Steam.
-
 ## Repairing a single step
 
 Every step is idempotent and can run alone:
 
 ```bash
-ROOT="$PWD" bash scripts/50-kde.sh
+ROOT="$PWD" bash scripts/50-kde.sh     # from the checkout
 ```
 
 Logs and backups live under `~/.local/share/win7-aero/`. The final verification

@@ -1,0 +1,64 @@
+#!/bin/bash
+# Launch a Windows 7 game installed from the retail ISO.
+#
+# Usage: win7games-run "Solitaire/Solitaire.exe"
+set -e
+
+WINEPREFIX="${WIN7_PREFIX:-$HOME/.win7games-proton/pfx}"
+export WINEPREFIX
+export WINEDEBUG="${WINEDEBUG:--all}"
+
+find_proton() {
+    if [ -n "${PROTON_DIR:-}" ] && [ -x "$PROTON_DIR/files/bin/wine" ]; then
+        printf '%s\n' "$PROTON_DIR"; return 0
+    fi
+    local base d
+    local -a cands=()
+    for base in "$HOME/.local/share/Steam/steamapps/common" \
+                "$HOME/.steam/root/steamapps/common" \
+                "$HOME/.steam/steam/steamapps/common" \
+                /d/SteamLibrary/steamapps/common \
+                /c/SteamLibrary/steamapps/common; do
+        [ -d "$base" ] || continue
+        for d in "$base"/Proton*; do
+            [ -x "$d/files/bin/wine" ] || continue
+            cands+=("$d")
+        done
+    done
+    [ ${#cands[@]} -eq 0 ] && return 1
+    local stable
+    stable=$(printf '%s\n' "${cands[@]}" | grep -E '/Proton [0-9]' | sort -V | tail -1)
+    [ -n "$stable" ] && { printf '%s\n' "$stable"; return 0; }
+    printf '%s\n' "${cands[@]}" | grep -E 'Experimental' | head -1 && return 0
+    printf '%s\n' "${cands[0]}"
+}
+
+PROTON_DIR="$(find_proton)" || {
+    echo "No working Proton runtime found." >&2
+    exit 1
+}
+export LD_LIBRARY_PATH="$PROTON_DIR/files/lib64:$PROTON_DIR/files/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
+# Proton symlinks its builtins into the prefix; repoint links left behind by a
+# removed or updated Proton build.
+if [ -n "$(find "$WINEPREFIX/drive_c" -xtype l -print -quit 2>/dev/null)" ]; then
+    while IFS= read -r -d '' link; do
+        target=$(readlink "$link") || continue
+        case "$target" in
+            */files/*)
+                new="$PROTON_DIR/files/${target#*/files/}"
+                [ -e "$new" ] && ln -sfn "$new" "$link"
+                ;;
+        esac
+    done < <(find "$WINEPREFIX/drive_c" -xtype l -print0 2>/dev/null)
+fi
+
+GAMES="$WINEPREFIX/drive_c/Program Files/Microsoft Games"
+if [ ! -f "$GAMES/$1" ]; then
+    echo "Game not found: $GAMES/$1" >&2
+    echo "Run scripts/49-games.sh to install the games." >&2
+    exit 1
+fi
+
+cd "$(dirname "$GAMES/$1")"
+exec "$PROTON_DIR/files/bin/wine" "$GAMES/$1"

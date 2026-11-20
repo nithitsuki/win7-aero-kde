@@ -10,10 +10,10 @@ PKGS=(
     qt6-base qt6-virtualkeyboard qt6-multimedia qt6-5compat qt6-wayland qt6-tools
     plasma-wayland-protocols wayland-protocols plasma5support
     vulkan-headers
-    kunitconversion kholidays
+    kunitconversion kholidays wimlib
     gtk3 gtk4
     kvantum sddm sddm-kcm konsole spectacle
-    7zip aria2 icoutils imagemagick python
+    7zip aria2 icoutils imagemagick python tk uv
 )
 
 if [[ ${DRY_RUN:-0} == 1 ]]; then

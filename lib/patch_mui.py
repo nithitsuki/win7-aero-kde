@@ -10,7 +10,7 @@ one operation, because mutating a parsed resource tree child-by-child
 invalidates LIEF wrappers and silently drops resources.
 
 Usage: patch_mui.py <app.exe> <app.exe.mui>
-Installs nothing; edits the exe in place (a .bak is written once).
+Installs nothing; edits the exe in place.
 """
 
 import os
