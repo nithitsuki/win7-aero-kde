@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+exec konsole \
+    --separate \
+    --notransparency \
+    --workdir "$HOME" \
+    --qwindowtitle "Command Prompt" \
+    --hide-menubar \
+    --hide-tabbar \
+    --hide-toolbars \
+    -p "LocalTabTitleFormat=Command Prompt" \
+    -p "RemoteTabTitleFormat=Command Prompt" \
+    -p "Font=Consolas,12,-1,5,50,0,0,0,0,0" \
+    -p "ColorScheme=Win7CMD" \
+    -p "TerminalColumns=80" \
+    -p "TerminalRows=25" \
+    -p "TerminalMargin=0" \
+    -p "CursorShape=1" \
+    -p "BlinkingCursorEnabled=true" \
+    -p "ScrollBarPosition=1" \
+    -p "ShowTerminalSizeHint=false" \
+    -e "$HOME/.local/bin/win7-cmd-shell"

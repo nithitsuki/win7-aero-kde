@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Command Prompt
+GenericName=Command Prompt
+Comment=Windows 7 style command prompt
+Exec=@HOME@/.local/bin/cmd
+Icon=win7-cmd
+Terminal=false
+Categories=System;TerminalEmulator;
+Keywords=cmd;command;prompt;shell;terminal;windows;
+StartupNotify=true

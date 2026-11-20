@@ -1,0 +1,78 @@
+# Windows 7 Command Prompt lookalike shell.
+# Intentionally does not source ~/.bashrc, so the prompt stays clean.
+
+export HISTFILE="$HOME/.win7-cmd-history"
+export HISTSIZE=1000
+export HISTFILESIZE=2000
+shopt -s histappend
+
+win_pwd() {
+    local p="$PWD" rest
+    if [[ "$p" == "$HOME" ]]; then
+        printf 'C:\\Users\\%s' "$USER"
+    elif [[ "$p" == "$HOME"/* ]]; then
+        rest="${p#"$HOME"}"
+        rest="${rest//\//\\}"
+        printf 'C:\\Users\\%s%s' "$USER" "$rest"
+    elif [[ "$p" == "/" ]]; then
+        printf 'C:\\'
+    else
+        p="${p//\//\\}"
+        printf 'C:%s' "$p"
+    fi
+}
+
+win_prompt() {
+    local p
+    p="$(win_pwd)"
+    # Double the backslashes so bash's prompt decoder prints one.
+    p="${p//\\/\\\\}"
+    printf '%s> ' "$p"
+}
+
+PROMPT_COMMAND='PS1="$(win_prompt)"'
+PS1="$(win_prompt)"
+
+ver() {
+    printf '\nMicrosoft Windows [Version 6.1.7601]\n\n'
+}
+
+vol() {
+    printf ' Volume in drive C has no label.\n'
+    printf ' Volume Serial Number is 7A1B-3C2D\n\n'
+}
+
+title() {
+    printf '\033]0;%s\007' "$*"
+}
+
+cd() {
+    if [ "$#" -eq 0 ]; then
+        win_pwd
+        printf '\n'
+    else
+        builtin cd "$@" || return
+    fi
+}
+
+alias dir='ls -l --group-directories-first'
+alias cls='clear'
+alias copy='cp'
+alias move='mv'
+alias del='rm'
+alias erase='rm'
+alias type='cat'
+alias md='mkdir'
+alias rd='rmdir'
+alias where='which'
+alias ipconfig='ip addr'
+alias tasklist='ps aux'
+alias taskkill='kill'
+alias explorer='dolphin'
+alias notepad='kate'
+alias help='printf "Available: dir cls cd copy move del type md rd where ver vol title exit\\n"'
+
+title 'Command Prompt'
+
+printf 'Microsoft Windows [Version 6.1.7601]\n'
+printf 'Copyright (c) 2009 Microsoft Corporation.  All rights reserved.\n\n'

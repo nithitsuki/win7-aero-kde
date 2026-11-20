@@ -1,0 +1,21 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Id": "io.github.win7aero.picturepuzzle",
+        "Name": "Picture Puzzle",
+        "Description": "Move the pieces of the puzzle and try to put them in order.",
+        "Category": "Games",
+        "Icon": "io.github.win7aero.picturepuzzle",
+        "License": "GPL-3.0-or-later",
+        "Version": "1.0",
+        "Authors": [
+            {
+                "Name": "win7-aero-kde contributors"
+            }
+        ],
+        "FormFactors": [
+            "desktop"
+        ]
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Bind the Windows/Meta key to SevenStart. The stock launcher action moves to
+# Alt+F1 in scripts/72-shortcuts.sh, so it no longer competes for Meta.
+set -u
+
+# Wait for plasmashell to answer; autostart can fire before the panel exists.
+for _ in $(seq 1 20); do
+    if qdbus6 org.kde.plasmashell /PlasmaShell \
+        org.kde.PlasmaShell.evaluateScript 'print(1)' >/dev/null 2>&1; then
+        break
+    fi
+    sleep 1
+done
+
+# The panel can exist before its applets are created. Retry until SevenStart is
+# present, otherwise the applet keeps no shortcut and Meta stays unbound.
+for _ in $(seq 1 30); do
+    found="$(qdbus6 org.kde.plasmashell /PlasmaShell \
+        org.kde.PlasmaShell.evaluateScript '
+            var n = 0;
+            var ps = panels();
+            for (var i = 0; i < ps.length; i++) {
+                var ws = ps[i].widgets();
+                for (var j = 0; j < ws.length; j++) {
+                    if (ws[j].type === "io.gitgud.wackyideas.SevenStart") {
+                        ws[j].globalShortcut = "Meta";
+                        n++;
+                    }
+                }
+            }
+            print(n);
+        ' 2>/dev/null || true)"
+    [[ "$found" =~ [1-9] ]] && break
+    sleep 1
+done
+
+# Do not unregister the stock "activate application launcher" action. An
+# unregister makes KGlobalAccel rewrite kglobalshortcutsrc from memory 500 ms
+# later, which drops the Alt+F1 binding that scripts/72-shortcuts.sh writes.
+# The config moves that action to Alt+F1 after the next login, so it no longer
+# competes for Meta.
+
+exit 0

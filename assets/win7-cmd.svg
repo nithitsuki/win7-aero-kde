@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="title" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5a91c9"/>
+      <stop offset="0.5" stop-color="#3c6fa8"/>
+      <stop offset="1" stop-color="#2e5b8c"/>
+    </linearGradient>
+  </defs>
+  <rect x="3.5" y="6.5" width="57" height="51" rx="3" fill="#111" stroke="#6f6f6f" stroke-width="1.5"/>
+  <rect x="4.5" y="7.5" width="55" height="11" rx="2" fill="url(#title)"/>
+  <text x="32" y="15.5" font-family="Segoe UI, sans-serif" font-size="7" fill="#ffffff" text-anchor="middle">Command Prompt</text>
+  <text x="10" y="31" font-family="Consolas, monospace" font-size="10" fill="#d8d8d8">C:\&gt;</text>
+  <rect x="10" y="37" width="6" height="2" fill="#d8d8d8"/>
+</svg>

@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec bash --noprofile --rcfile "$HOME/.config/win7-cmd/bashrc" -i

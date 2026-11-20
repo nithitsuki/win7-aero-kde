@@ -1,0 +1,18 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Category": "Date and Time",
+        "Description": "A calendar gadget",
+        "Icon": "x-office-calendar",
+        "Id": "io.github.win7aero.calendar",
+        "License": "GPL-3.0-or-later",
+        "Name": "Calendar",
+        "Version": "1.0",
+        "Authors": [
+            {
+                "Name": "win7-aero-kde contributors"
+            }
+        ]
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}
